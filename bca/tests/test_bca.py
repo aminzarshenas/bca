@@ -1,0 +1,1 @@
+from bca import BCAfrom sklearn.datasets import load_breast_cancerfrom sklearn.naive_bayes import GaussianNBdef test_bca():    X, y = load_breast_cancer().data, load_breast_cancer().target    estimator = GaussianNB()    selector = BCA(estimator)    selector.fit(X, y) test_bca()
