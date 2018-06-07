@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to sklearn-template's documentation!
+Welcome to BCA's documentation!
 ============================================
 
-This project is a reference implementation to anyone who wishes to develop
-scikit-learn compatible classes. It comes with a `template` module which
-contains a single estimator with unit tests.
+Binary Coordinate Ascent (BCA) algorithm is an efficient optimization 
+algorithm for wrapper-based feature subset selection that can be 
+coupled with several classifiers including SVM, Naive Bayes, etc.
 
 
     .. toctree::
@@ -18,7 +18,7 @@ contains a single estimator with unit tests.
        auto_examples/index
        ...
 
-See the `README <https://github.com/vighneshbirodkar/project-template/blob/master/README.md>`_
+See the `README <https://github.com/aminzarshenas/bca/README.md>`_
 for more information.
 
 

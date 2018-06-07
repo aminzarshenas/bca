@@ -1,7 +1,7 @@
-Template
+BCA
 ========
 
-The documentation of the template module.
+The documentation of the BCA module.
 
-.. automodule:: skltemplate.template
+.. automodule:: bca.BCA
    :members:
