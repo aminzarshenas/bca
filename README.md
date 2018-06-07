@@ -42,7 +42,7 @@ BCA has to be fitted with two arrays: an array X of size [n_samples, n_features]
 ```
 
 ## Reference:
-- [1] Zarshenas, A. and Suzuki, K., "Binary coordinate ascent: An efficient optimization technique for feature subset selection for machine learning", Knowledge-Based Systems 110 (2016): 191-201.
+[1] Zarshenas, A. and Suzuki, K., "Binary coordinate ascent: An efficient optimization technique for feature subset selection for machine learning", Knowledge-Based Systems 110 (2016): 191-201.
  
 
 
