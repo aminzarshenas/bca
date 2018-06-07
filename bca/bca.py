@@ -1,5 +1,9 @@
 """ 
 Binary Coordinate Ascent algorithm for feature subset selection
+
+Authors: Amin Zarshenas <mzarshen@hawk.iit.edu>
+         Vijay Srinivas Tida
+         Kenji Suzuki
 """
 
 import numpy as np
