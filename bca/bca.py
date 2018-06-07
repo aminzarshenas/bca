@@ -1,4 +1,4 @@
-""" 
+"""
 Binary Coordinate Ascent algorithm for feature subset selection
 
 Authors: Amin Zarshenas <mzarshen@hawk.iit.edu>
@@ -12,22 +12,28 @@ from sklearn.model_selection import cross_val_score
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 
+
 class BCA(BaseEstimator):
 
     """Feature Selection with Binary Coordinate Ascent Algorithm
 
-    Given an external estimator, the goal of binary coordinate ascent (BCA) algorithm is to select 
-    features which maximize an objective function of an estimator. It returns a binary vector with 
-    its size equal to the number of features, where zero or one indicates a feature at that position 
-    is not selected, or selected, respectively. First the best feature subset is initialized 
-    (specified as a binary vector). The default initialization is the vector of all zeros, corresponding 
-    to no input features selected. The corresponding objective function of an specified estimator is then
-    calculated for the initial subset. BCA algorithm then iteratively select or remove features, one at a 
-    time, by flipping the binary elements of the binary vector of features, and examine if the 
-    selection/removal can increase the objective function. The process will be repeated over this vector 
-    for several times untill a convergance criteria is reached (can be set to number of iterations or a 
-    delta for objective value). The algorithm will return a binary vector corresponding to the "best" 
-    subset of features.
+    Given an external estimator, the goal of binary coordinate ascent
+    (BCA) algorithm is to select features which maximize an objective
+    function of an estimator. It returns a binary vector with its size
+    equal to the number of features, where zero or one indicates a
+    feature at that position is not selected, or selected, respectively.
+    First the best feature subset is initialized (specified as a binary
+    vector). The default initialization is the vector of all zeros,
+    corresponding to no input features selected. The corresponding
+    objective function of an specified estimator is then calculated for
+    the initial subset. BCA algorithm then iteratively select or remove
+    features, one at a time, by flipping the binary elements of the
+    binary vector of features, and examine if the selection/removal can
+    increase the objective function. The process will be repeated over
+    this vector for several times untill a convergance criteria is
+    reached (can be set to number of iterations or a delta for objective
+    value). The algorithm will return a binary vector corresponding to
+    the "best" subset of features.
 
     Read more in the reference link specified below:
 
@@ -36,13 +42,15 @@ class BCA(BaseEstimator):
     Parameters
     ----------
     estimator : object
-        A supervised learning estimator with a `` fit `` method that will be used along with an objective
-        function, in order to calculate the importance of a feature subset.
+        A supervised learning estimator with a `` fit `` method that will
+        be used along with an objective function, in order to calculate
+        the importance of a feature subset.
 
     scoring : string
-        The metric to be used as objective to be maximized, e.g., roc_auc, accuracy, etc.
-        Note: at the moment sklearn cross_val_score inside the BCA class supports binary 
-        classification only for roc_auc.
+        The metric to be used as objective to be maximized, e.g., roc_auc,
+        accuracy, etc.
+        Note: at the moment sklearn cross_val_score inside the BCA class
+        supports binary classification only for roc_auc.
 
     cv : int, cross-validation generator or an iterable, optional
         The cv parameter used inside the sklearn cross_val_score.
@@ -55,7 +63,7 @@ class BCA(BaseEstimator):
     --------
     The following example shows how to retrieve the 4 right informative
     features in the Iris dataset.
-   
+
     >>> from bca import BCA
     >>> from sklearn.datasets import load_breast_cancer
     >>> from sklearn.naive_bayes import GaussianNB
@@ -69,13 +77,13 @@ class BCA(BaseEstimator):
     0.971989226626
     >>> selector.predict(X[20:25])
     [1 1 0 0 0]
-    
+
     References
     ----------
 
-    .. [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient optimization 
-           technique for feature subset selection for machine learning", 
-           Knowledge-Based Systems 110 (2016): 191-201.
+    .. [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient
+           optimization technique for feature subset selection for machine
+           learning", Knowledge-Based Systems 110 (2016): 191-201.
     """
     def __init__(self, estimator, scoring='accuracy', cv=5, delta=10**-5):
         self.estimator = estimator
@@ -85,7 +93,7 @@ class BCA(BaseEstimator):
 
     def _estimator_type(self):
         return self.estimator._estimator_type
-        
+
     def fit(self, X, y, initial_subset=None, fit_estimator=True, verbose=True):
         """Fit the BCA model to find the best subset of features, and
         potentially fit the estimator on the best subset.
@@ -101,7 +109,7 @@ class BCA(BaseEstimator):
         initial_subset : binary vector, shape=[n_features]
             The initial subset. Default to all zeros ("None").
 
-        fit_estimator : boolean, 
+        fit_estimator : boolean,
             indicates to fit the estimator on the final features or not.
 
         verbose : boolean
@@ -112,9 +120,12 @@ class BCA(BaseEstimator):
     def _fit(self, X, y, initial_subset, fit_estimator, verbose):
 
         X, y = check_X_y(X, y, "csc")
+
         # scoring function
-        scorer = lambda features: self._scorer(X, y, features, verbose=verbose)
-        #initialization
+        def scorer(features):
+            return self._scorer(X, y, features, verbose=verbose)
+
+        # initialization
         iteration = 0
         n_features = X.shape[1]
         if initial_subset is not None:
@@ -122,20 +133,24 @@ class BCA(BaseEstimator):
         else:
             features = np.zeros(n_features)
 
-        score = scorer(features) 
+        score = scorer(features)
 
-        if verbose: print ("Iteration {0} starts...".format(iteration))
+        if verbose:
+            print ("Iteration {0} starts...".format(iteration))
 
-        if verbose: self._print_features(features, score)            
+        if verbose:
+            self._print_features(features, score)
 
         # main BCA loop of feature selection
-        stop = False  
+        stop = False
 
-        if verbose: print( "\nBCA algorithm starts...")
+        if verbose:
+            print("\nBCA algorithm starts...")
 
-        while not stop:  
+        while not stop:
             iteration += 1
-            if verbose: print( "\nIteration {0} starts...".format(iteration))
+            if verbose:
+                print("\nIteration {0} starts...".format(iteration))
             score_best = score
 
             # one iteration over all features
@@ -150,25 +165,28 @@ class BCA(BaseEstimator):
                     features = features_trial.copy()
                     score = score_trial
 
-                if verbose: self._print_features(features, score)
+                if verbose:
+                    self._print_features(features, score)
 
             # after each iteration check if the maximization converged
             if abs(score_best-score) < self.delta:
                 stop = True
 
-        if verbose: print ("\nBCA algorithm finished..." )    
+        if verbose:
+            print ("\nBCA algorithm finished...")
 
         # fit a final estimator on the entire dataset
-        if fit_estimator: 
-            if verbose: print ("\nFitting the final estimator...") 
-            self.estimator.fit(X[:, features==1], y)
+        if fit_estimator:
+            if verbose:
+                print ("\nFitting the final estimator...")
+            self.estimator.fit(X[:, features == 1], y)
 
-        #set final attributes
-        self.features = np.arange(len(features))[features==1]       
+        # set final attributes
+        self.features = np.arange(len(features))[features == 1]
         self.score = score
-        
+
         return self
-        
+
     def predict(self, X):
         """Reduce X to the selected features and then predict using the
            underlying estimator.
@@ -187,14 +205,13 @@ class BCA(BaseEstimator):
     def _scorer(self, X, y, features, verbose):
 
         if np.sum(features) > 0:
-            return np.mean(cross_val_score(self.estimator, X[:, features==1], y, 
-                           scoring=self.scoring, cv=self.cv, verbose=verbose))
+            return np.mean(cross_val_score(self.estimator, X[:, features == 1],
+                           y, scoring=self.scoring, cv=self.cv,
+                           verbose=verbose))
         else:
             return -np.inf
 
     def _print_features(self, features, score):
-        features = np.arange(len(features))[features==1]
-        print ("best feature set so far is {0} with score = {1}".format(features, score))
-
-
-
+        features = np.arange(len(features))[features == 1]
+        print("best feature set so far is {0} with score = {1}".
+              format(features, score))
