@@ -36,13 +36,13 @@
 
   .. container:: sphx-glr-download
 
-    :download:`Download all examples in Python source code: auto_examples_python.zip <//Volumes/GoogleDrive/My Drive/IIT/PhD/Protege/MS/Vijay Srinivas Tida/bak/bca/doc/auto_examples/auto_examples_python.zip>`
+    :download:`Download all examples in Python source code: auto_examples_python.zip <//Volumes/GoogleDrive/My Drive/IIT/PhD/Protege/MS/Vijay Srinivas Tida/CodeFromTemplate/bca/doc/auto_examples/auto_examples_python.zip>`
 
 
 
   .. container:: sphx-glr-download
 
-    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip <//Volumes/GoogleDrive/My Drive/IIT/PhD/Protege/MS/Vijay Srinivas Tida/bak/bca/doc/auto_examples/auto_examples_jupyter.zip>`
+    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip <//Volumes/GoogleDrive/My Drive/IIT/PhD/Protege/MS/Vijay Srinivas Tida/CodeFromTemplate/bca/doc/auto_examples/auto_examples_jupyter.zip>`
 
 
 .. only:: html
