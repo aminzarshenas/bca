@@ -1,4 +1,5 @@
 API Documentation
 =================
 
-* :doc:`bca`
+.. autoclass:: bca.bca.BCA
+    :members:

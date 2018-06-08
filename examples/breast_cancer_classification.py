@@ -1,9 +1,9 @@
 """
 ================================================================
-Breast cancer classification coupled with BCA feature selection
+Example
 ================================================================
 
-An example plot of :class:`bca.bca.BCA`
+An example of :class:`bca.BCA`
 """
 from bca import BCA
 from sklearn.datasets import load_breast_cancer

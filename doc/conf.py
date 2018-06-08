@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# project-template documentation build configuration file, created by
+# bca documentation build configuration file, created by
 # sphinx-quickstart on Mon Jan 18 14:44:12 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -21,6 +21,8 @@ import sphinx_rtd_theme
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) + os.sep + '')
+sys.path.insert(0, str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) + os.sep + 'bca')
 
 # -- General configuration ---------------------------------------------------
 
@@ -212,7 +214,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'project-templatedoc'
+htmlhelp_basename = 'bca'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -226,19 +228,21 @@ latex_elements = {
 
 # Additional stuff for the LaTeX preamble.
 #'preamble': '',
+'classoptions': ',openany,oneside'
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'project-template.tex', u'project-template Documentation',
-   u'Vighnesh Birodkar', 'manual'),
+  ('index', 'bca.tex', u'BCA Documentation',
+   u'Amin Zarshenas \\and Vijay Srinivas Tida \\and Kenji Suzuki', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
 #latex_logo = None
+
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
@@ -262,8 +266,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'project-template', u'project-template Documentation',
-     [u'Vighnesh Birodkar'], 1)
+    ('index', 'bca', u'BCA Documentation',
+     [u'Amin Zarshenas \\and Vijay Srinivas Tida \\and Kenji Suzuki'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -276,8 +280,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'project-template', u'project-template Documentation',
-   u'Vighnesh Birodkar', 'project-template', 'One line description of project.',
+  ('index', 'bca', u'BCA Documentation',
+   u'Amin Zarshenas \\and Vijay Srinivas Tida \\and Kenji Suzuki', 'bca', 
+   'Binary Coordinate Ascent (BCA) algorithm for feature subset selection.',
    'Miscellaneous'),
 ]
 

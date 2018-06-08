@@ -6,20 +6,16 @@
 Welcome to BCA's documentation!
 ============================================
 
-Binary Coordinate Ascent (BCA) algorithm is an efficient optimization 
-algorithm for wrapper-based feature subset selection that can be 
-coupled with several classifiers including SVM, Naive Bayes, etc.
-
-
     .. toctree::
        :maxdepth: 2
        
+       intro
        api
        auto_examples/index
        ...
 
-See the `README <https://github.com/aminzarshenas/bca/README.md>`_
-for more information.
+.. See the `README <https://github.com/aminzarshenas/bca/README.md>`_
+.. for more information.
 
 
 Indices and tables

@@ -1,2 +1,0 @@
-BCA can be used to perform wrapper-based feature selection for binary or multi-class classification problems. An estimator and a scoring function must be indicated to set initialize the class. In the breast cancer classification example, a naive Bayes classifier is used as the main estimator while accuracy (default) is used as the scoring function. 
-The scores are calculated through 5-fold cross-validation as default (can be set manually).

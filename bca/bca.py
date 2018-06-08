@@ -41,6 +41,7 @@ class BCA(BaseEstimator):
 
     Parameters
     ----------
+    
     estimator : object
         A supervised learning estimator with a `` fit `` method that will
         be used along with an objective function, in order to calculate
@@ -61,8 +62,9 @@ class BCA(BaseEstimator):
 
     Examples
     --------
-    The following example shows how to retrieve the 4 right informative
-    features in the Iris dataset.
+
+    The following example shows how to select the optimial subset of features
+    in the breast cancer dataset.
 
     >>> from bca import BCA
     >>> from sklearn.datasets import load_breast_cancer
@@ -81,10 +83,12 @@ class BCA(BaseEstimator):
     References
     ----------
 
-    .. [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient
-           optimization technique for feature subset selection for machine
-           learning", Knowledge-Based Systems 110 (2016): 191-201.
+    [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient
+        optimization technique for feature subset selection for machine
+        learning", Knowledge-Based Systems 110 (2016): 191-201.
+    
     """
+    
     def __init__(self, estimator, scoring='accuracy', cv=5, delta=10**-5):
         self.estimator = estimator
         self.scoring = scoring
@@ -100,6 +104,7 @@ class BCA(BaseEstimator):
 
         Parameters
         ----------
+
         X : {array-like, sparse matrix},  shape=[n_samples,n_features]
             The training input samples.
 
@@ -114,6 +119,12 @@ class BCA(BaseEstimator):
 
         verbose : boolean
             indicates the verbosity of the algorithm.
+
+        Returns
+        -------
+
+        self : the BCA object with trained classifier
+
         """
         return self._fit(X, y, initial_subset, fit_estimator, verbose)
 
@@ -190,14 +201,19 @@ class BCA(BaseEstimator):
     def predict(self, X):
         """Reduce X to the selected features and then predict using the
            underlying estimator.
+        
         Parameters
         ----------
+        
         X : array of shape [n_samples, n_features]
             The input samples.
+        
         Returns
         -------
+        
         y : array of shape [n_samples]
             The predicted target values.
+
         """
         check_is_fitted(self, 'estimator')
         return self.estimator.predict(X[:, self.features])
