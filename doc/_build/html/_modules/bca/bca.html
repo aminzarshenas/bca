@@ -1,0 +1,441 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bca.bca &mdash; bca 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bca
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/breast_cancer_classification.html">Example</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bca</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>bca.bca</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bca.bca</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Binary Coordinate Ascent algorithm for feature subset selection</span>
+
+<span class="sd">Authors: Amin Zarshenas &lt;mzarshen@hawk.iit.edu&gt;</span>
+<span class="sd">         Vijay Srinivas Tida</span>
+<span class="sd">         Kenji Suzuki</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_X_y</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">cross_val_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+
+
+<div class="viewcode-block" id="BCA"><a class="viewcode-back" href="../../api.html#bca.bca.BCA">[docs]</a><span class="k">class</span> <span class="nc">BCA</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Feature Selection with Binary Coordinate Ascent Algorithm</span>
+
+<span class="sd">    Given an external estimator, the goal of binary coordinate ascent</span>
+<span class="sd">    (BCA) algorithm is to select features which maximize an objective</span>
+<span class="sd">    function of an estimator. It returns a binary vector with its size</span>
+<span class="sd">    equal to the number of features, where zero or one indicates a</span>
+<span class="sd">    feature at that position is not selected, or selected, respectively.</span>
+<span class="sd">    First the best feature subset is initialized (specified as a binary</span>
+<span class="sd">    vector). The default initialization is the vector of all zeros,</span>
+<span class="sd">    corresponding to no input features selected. The corresponding</span>
+<span class="sd">    objective function of an specified estimator is then calculated for</span>
+<span class="sd">    the initial subset. BCA algorithm then iteratively select or remove</span>
+<span class="sd">    features, one at a time, by flipping the binary elements of the</span>
+<span class="sd">    binary vector of features, and examine if the selection/removal can</span>
+<span class="sd">    increase the objective function. The process will be repeated over</span>
+<span class="sd">    this vector for several times untill a convergance criteria is</span>
+<span class="sd">    reached (can be set to number of iterations or a delta for objective</span>
+<span class="sd">    value). The algorithm will return a binary vector corresponding to</span>
+<span class="sd">    the &quot;best&quot; subset of features.</span>
+
+<span class="sd">    Read more in the reference link specified below:</span>
+
+<span class="sd">    http://www.sciencedirect.com/science/article/pii/S0950705116302416</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    estimator : object</span>
+<span class="sd">        A supervised learning estimator with a `` fit `` method that will</span>
+<span class="sd">        be used along with an objective function, in order to calculate</span>
+<span class="sd">        the importance of a feature subset.</span>
+
+<span class="sd">    scoring : string</span>
+<span class="sd">        The metric to be used as objective to be maximized, e.g., roc_auc,</span>
+<span class="sd">        accuracy, etc.</span>
+<span class="sd">        Note: at the moment sklearn cross_val_score inside the BCA class</span>
+<span class="sd">        supports binary classification only for roc_auc.</span>
+
+<span class="sd">    cv : int, cross-validation generator or an iterable, optional</span>
+<span class="sd">        The cv parameter used inside the sklearn cross_val_score.</span>
+
+<span class="sd">    delta : float</span>
+
+<span class="sd">        The delta used to determine the convergance of the objective function.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    The following example shows how to select the optimial subset of features</span>
+<span class="sd">    in the breast cancer dataset.</span>
+
+<span class="sd">    &gt;&gt;&gt; from bca import BCA</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.datasets import load_breast_cancer</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.naive_bayes import GaussianNB</span>
+<span class="sd">    &gt;&gt;&gt; X, y = load_breast_cancer().data, load_breast_cancer().target</span>
+<span class="sd">    &gt;&gt;&gt; estimator = GaussianNB()</span>
+<span class="sd">    &gt;&gt;&gt; selector = BCA(estimator, scoring=&#39;accuracy&#39;, cv=5)</span>
+<span class="sd">    &gt;&gt;&gt; selector = selector.fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; selector.features</span>
+<span class="sd">    [ 1  4  6  7 16 20 21 22 23 27 28]</span>
+<span class="sd">    &gt;&gt;&gt; selector.score</span>
+<span class="sd">    0.971989226626</span>
+<span class="sd">    &gt;&gt;&gt; selector.predict(X[20:25])</span>
+<span class="sd">    [1 1 0 0 0]</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    [1] Zarshenas, A. and Suzuki, &quot;Binary coordinate ascent: An efficient</span>
+<span class="sd">        optimization technique for feature subset selection for machine</span>
+<span class="sd">        learning&quot;, Knowledge-Based Systems 110 (2016): 191-201.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">10</span><span class="o">**-</span><span class="mi">5</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span>
+
+    <span class="k">def</span> <span class="nf">_estimator_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">_estimator_type</span>
+
+<div class="viewcode-block" id="BCA.fit"><a class="viewcode-back" href="../../api.html#bca.bca.BCA.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">initial_subset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fit_estimator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the BCA model to find the best subset of features, and</span>
+<span class="sd">        potentially fit the estimator on the best subset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : {array-like, sparse matrix},  shape=[n_samples,n_features]</span>
+<span class="sd">            The training input samples.</span>
+
+<span class="sd">        y : array-like, shape = [n_samples]</span>
+<span class="sd">            The target values.</span>
+
+<span class="sd">        initial_subset : binary vector, shape=[n_features]</span>
+<span class="sd">            The initial subset. Default to all zeros (&quot;None&quot;).</span>
+
+<span class="sd">        fit_estimator : boolean,</span>
+<span class="sd">            indicates to fit the estimator on the final features or not.</span>
+
+<span class="sd">        verbose : boolean</span>
+<span class="sd">            indicates the verbosity of the algorithm.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        self : the BCA object with trained classifier</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">initial_subset</span><span class="p">,</span> <span class="n">fit_estimator</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">initial_subset</span><span class="p">,</span> <span class="n">fit_estimator</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;csc&quot;</span><span class="p">)</span>
+
+        <span class="c1"># scoring function</span>
+        <span class="k">def</span> <span class="nf">scorer</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scorer</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="c1"># initialization</span>
+        <span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">initial_subset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">initial_subset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
+
+        <span class="n">score</span> <span class="o">=</span> <span class="n">scorer</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Iteration </span><span class="si">{0}</span><span class="s2"> starts...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iteration</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+
+        <span class="c1"># main BCA loop of feature selection</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">BCA algorithm starts...&quot;</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">stop</span><span class="p">:</span>
+            <span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Iteration </span><span class="si">{0}</span><span class="s2"> starts...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iteration</span><span class="p">))</span>
+            <span class="n">score_best</span> <span class="o">=</span> <span class="n">score</span>
+
+            <span class="c1"># one iteration over all features</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
+                <span class="c1"># flip one of the feature to create a new subset</span>
+                <span class="n">features_trial</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">features_trial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">features_trial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">score_trial</span> <span class="o">=</span> <span class="n">scorer</span><span class="p">(</span><span class="n">features_trial</span><span class="p">)</span>
+
+                <span class="c1"># modify the features if the new subset is better</span>
+                <span class="k">if</span> <span class="n">score_trial</span> <span class="o">&gt;</span> <span class="n">score</span><span class="p">:</span>
+                    <span class="n">features</span> <span class="o">=</span> <span class="n">features_trial</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">score</span> <span class="o">=</span> <span class="n">score_trial</span>
+
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_print_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+
+            <span class="c1"># after each iteration check if the maximization converged</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">score_best</span><span class="o">-</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">BCA algorithm finished...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># fit a final estimator on the entire dataset</span>
+        <span class="k">if</span> <span class="n">fit_estimator</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Fitting the final estimator...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">features</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># set final attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">))[</span><span class="n">features</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">score</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="BCA.predict"><a class="viewcode-back" href="../../api.html#bca.bca.BCA.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reduce X to the selected features and then predict using the</span>
+<span class="sd">           underlying estimator.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : array of shape [n_samples, n_features]</span>
+<span class="sd">            The input samples.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        </span>
+<span class="sd">        y : array of shape [n_samples]</span>
+<span class="sd">            The predicted target values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;estimator&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_scorer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">features</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cross_val_score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">features</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span>
+                           <span class="n">y</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="k">def</span> <span class="nf">_print_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">score</span><span class="p">):</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">))[</span><span class="n">features</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;best feature set so far is </span><span class="si">{0}</span><span class="s2"> with score = </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span>
+              <span class="nb">format</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">score</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Amin Zarshenas.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
