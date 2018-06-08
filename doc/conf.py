@@ -47,7 +47,8 @@ extensions = [
     'numpydoc',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx_gallery.gen_gallery'
+    'sphinx_gallery.gen_gallery',
+    'numpydoc'
 
 ]
 
