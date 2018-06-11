@@ -10,8 +10,8 @@ Welcome to BCA's documentation!
        :maxdepth: 2
        
        intro
-       api
-       auto_examples/index
+..api
+..auto_examples/index
        ...
 
 .. See the `README <https://github.com/aminzarshenas/bca/README.md>`_
