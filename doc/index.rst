@@ -11,6 +11,7 @@ Welcome to BCA's documentation!
        
        intro
        api
+       check
        auto_examples/index
        ...
 
