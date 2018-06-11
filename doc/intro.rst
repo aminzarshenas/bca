@@ -1,7 +1,7 @@
 Introduction
 ============================================
 
-Binary coordinate ascent (BCA) algorithm is a simple and efficient wrapper method for feature subset selection (FSS) which is one of the major steps in almost every machine learning application. As an advantage to other wrapper FSS meta-heuristics, e.g., sequential forward selection (SFS) and sequential floating forward selection (SFFS), BCA is computationally significantly more efficient. A study [1] showed that the efficiency in terms of the number of subset evaluations was improved significantly (by factors of 5-37), comparing to SFS and SFFS techniques, while maintaining the classification performance for unseen data.
+Binary coordinate ascent (BCABCA) algorithm is a simple and efficient wrapper method for feature subset selection (FSS) which is one of the major steps in almost every machine learning application. As an advantage to other wrapper FSS meta-heuristics, e.g., sequential forward selection (SFS) and sequential floating forward selection (SFFS), BCA is computationally significantly more efficient. A study [1] showed that the efficiency in terms of the number of subset evaluations was improved significantly (by factors of 5-37), comparing to SFS and SFFS techniques, while maintaining the classification performance for unseen data.
 
 BCA-based FSS has been successfully applied for support vector machine (SVM), multilayer perceptron (MLP) and naive Bayes (NB) classifiers with 12 public datasets and showed higher efficiency when compared to conventional methods. The method is directly extendable to other classifiers and other binary and multi-class datasets.
 
