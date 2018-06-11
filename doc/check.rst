@@ -1,4 +1,0 @@
-CHECK
-==================
-
-Check is awesome !!!
