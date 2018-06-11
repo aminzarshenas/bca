@@ -50,9 +50,7 @@ extensions = [
     'numpydoc',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx_gallery.gen_gallery',
-    'numpydoc'
-
+    'sphinx_gallery.gen_gallery'
 ]
 
 # pngmath / imgmath compatibility layer for different sphinx versions
@@ -300,8 +298,8 @@ texinfo_documents = [
 #         open(examples_path, 'w').close()
 
 
-# def setup(app):
-#     app.connect('autodoc-process-docstring', generate_example_rst)
+def setup(app):
+    app.connect('autodoc-process-docstring', generate_example_rst)
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
