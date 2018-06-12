@@ -2,4 +2,4 @@ Installation
 ================
 
 .. code-block:: console
-  pip install bca
+   pip install bca
