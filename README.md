@@ -13,6 +13,16 @@ The advantages of BCA algorithm are:
 The disadvantages of BCA algorithm are:
 - When coupled with classifiers with computationally expensive training, e.g., MLP, the execution time can be long. This is, however, a common cons. of wrapper based techniques. 
 
+## Documentation:
+
+- https://bca.readthedocs.io
+
+## Installation:
+
+```bash
+$ pip install bca
+```
+
 ## Illustration:
 
 The class BCA implements a plain BCA algorithm which can be optionally coupled with specific classifiers such as GaussianNB(), SVC() and MLPClassifier(), as the main classifier, while performing wrapper-based FSS. A user can also choose the type of metric to be used as the goodness of the feature subsets, e.g., roc_auc or accuracy of the given classifier. Additionally, a user might also indicate the type of cross-validation or the number of folds to be used during performance estimation. BCA class returns the final selected feature set, as well as the final estimator, trained on the final subset of features selected by BCA.
@@ -42,7 +52,7 @@ BCA has to be fitted with two arrays: an array X of size [n_samples, n_features]
 ```
 
 ## Reference:
-[1] Zarshenas, A. and Suzuki, K., "Binary coordinate ascent: An efficient optimization technique for feature subset selection for machine learning", Knowledge-Based Systems 110 (2016): 191-201.
+[1] Zarshenas, A. and Suzuki, K., ["Binary coordinate ascent: An efficient optimization technique for feature subset selection for machine learning"](http://www.ece.iit.edu/~ksuzuki/wp-content/uploads/2017/04/ZarshenasASuzukiK_BCAFeatureSelection_KnowledgeBSystems2016.pdf), Knowledge-Based Systems 110 (2016): 191-201.
  
 
 
