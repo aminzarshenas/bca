@@ -19,7 +19,7 @@ except ImportError:
     sys.exit(1)
 
 setup(name='bca',
-      version='0.0.1',
+      version='0.1.0',
       description='Binary Coordinate Ascent algorithm for feature subset selection',
       author='Amin Zarshenas, Vijay Srinivas Tida, Kenji Suzuki',
       packages=find_packages(),
