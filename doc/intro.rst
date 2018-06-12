@@ -19,4 +19,4 @@ The disadvantages of BCA algorithm are:
 
 **Reference**:
 
-  .. [1] Zarshenas, A. and Suzuki, K., '"Binary coordinate ascent: An efficient optimization technique for feature subset selection for machine learning" <http://www.ece.iit.edu/~ksuzuki/wp-content/uploads/2017/04/ZarshenasASuzukiK_BCAFeatureSelection_KnowledgeBSystems2016.pdf>', Knowledge-Based Systems 110 (2016): 191-201.
+  .. [1] Zarshenas, A. and Suzuki, K., '"Binary coordinate ascent: An efficient optimization technique for feature subset selection for machine learning" <http://www.ece.iit.edu/~ksuzuki/wp-content/uploads/2017/04/ZarshenasASuzukiK_BCAFeatureSelection_KnowledgeBSystems2016.pdf>'_, Knowledge-Based Systems 110 (2016): 191-201.
