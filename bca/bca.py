@@ -83,9 +83,9 @@ class BCA(BaseEstimator):
     References
     ----------
 
-    [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient
-        optimization technique for feature subset selection for machine
-        learning", Knowledge-Based Systems 110 (2016): 191-201.
+    [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient 
+    optimization technique for feature subset selection for machine
+    learning", Knowledge-Based Systems 110 (2016): 191-201.
     
     """
     
@@ -115,15 +115,16 @@ class BCA(BaseEstimator):
             The initial subset. Default to all zeros ("None").
 
         fit_estimator : boolean,
-            indicates to fit the estimator on the final features or not.
+            Indicates to fit the estimator on the final features or not.
 
         verbose : boolean
-            indicates the verbosity of the algorithm.
+            Indicates the verbosity of the algorithm.
 
         Returns
         -------
 
-        self : the BCA object with trained classifier
+        self : class object 
+            The BCA object with trained classifier
 
         """
         return self._fit(X, y, initial_subset, fit_estimator, verbose)
@@ -200,7 +201,7 @@ class BCA(BaseEstimator):
 
     def predict(self, X):
         """Reduce X to the selected features and then predict using the
-           underlying estimator.
+        underlying estimator.
         
         Parameters
         ----------
