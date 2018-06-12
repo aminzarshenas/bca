@@ -79,13 +79,6 @@ class BCA(BaseEstimator):
     0.971989226626
     >>> selector.predict(X[20:25])
     [1 1 0 0 0]
-
-    References
-    ----------
-
-    [1] Zarshenas, A. and Suzuki, "Binary coordinate ascent: An efficient 
-    optimization technique for feature subset selection for machine
-    learning", Knowledge-Based Systems 110 (2016): 191-201.
     
     """
     
