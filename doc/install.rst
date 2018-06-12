@@ -1,5 +1,5 @@
 Installation
 ================
 
-.. highlight:: bash
-pip install bca
+::
+  pip install bca
